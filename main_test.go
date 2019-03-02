@@ -19,7 +19,7 @@ func TestIntegration(t *testing.T) {
 
 }
 
-func TestApp_Initialize(t *testing.T) {
+func TestApp_main(t *testing.T) {
 	var test string
 	Println = func(a ...interface{}) (n int, err error) {
 		test = fmt.Sprint(a)
