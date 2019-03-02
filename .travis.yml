@@ -5,6 +5,5 @@ services:
   - docker
   
 before_install:
-- docker build . -t go-alltest
-- docker run --rm -v "`pwd`/.cache/pkg:/go/pkg" -v "`pwd`:/go/src/app"  go-alltest
+- ./test.sh
 - docker run --rm --mount type=volume,src="$(pwd)",dst=/opt/app,type=bind -w=/opt/app red6/docker-sonar-scanner:latest sonar-scanner -Dsonar.login=$SONAR_TOKEN

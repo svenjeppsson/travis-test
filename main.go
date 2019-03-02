@@ -25,7 +25,3 @@ func (a *App) Initialize(connectionString string) error {
 	log.Printf("DB Status %v", a.DB.Stats())
 	return nil
 }
-
-func main() {
-
-}
