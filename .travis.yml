@@ -6,4 +6,5 @@ services:
   
 before_install:
 - docker build . -t go-alltest
+- echo $TESTVAR
 - docker run --rm -v "`pwd`/.cache/pkg:/go/pkg" -v "`pwd`:/go/src/app"  go-alltest
