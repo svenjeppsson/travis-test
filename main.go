@@ -2,7 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -10,6 +12,7 @@ import (
 var a App
 
 var sqlOpen = sql.Open
+var Println = fmt.Println
 
 type App struct {
 	DB *sql.DB
@@ -27,5 +30,5 @@ func (a *App) Initialize(connectionString string) error {
 }
 
 func main() {
-
+	Println(os.Getenv("TESTVAR"))
 }

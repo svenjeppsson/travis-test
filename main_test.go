@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"os"
 	"testing"
 )
@@ -16,6 +17,19 @@ func TestIntegration(t *testing.T) {
 	t.Run("Tables Exist", testTablesExist)
 	t.Run("testTablesStore", testTablesStore)
 
+}
+
+func TestApp_Initialize(t *testing.T) {
+	var test string
+	Println = func(a ...interface{}) (n int, err error) {
+		test = fmt.Sprint(a)
+		return 0, nil
+	}
+	os.Setenv("TESTVAR", "testvalue")
+	main()
+	if test != "testvalue" {
+		t.Error("main sould use TESTVAR")
+	}
 }
 
 func TestApp_Initialize(t *testing.T) {
