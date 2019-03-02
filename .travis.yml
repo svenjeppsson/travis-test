@@ -7,9 +7,4 @@ services:
 before_install:
 - docker build . -t go-alltest
 - docker run --rm -v "`pwd`/.cache/pkg:/go/pkg" -v "`pwd`:/go/src/app"  go-alltest
-- docker run --rm --mount type=volume,src="$(pwd)",dst=/opt/app,type=bind -w=/opt/app red6/docker-sonar-scanner:latest sonar-scanner \
-  -Dsonar.projectKey=svenjeppsson_travis-test \
-  -Dsonar.organization=svenjeppsson-github \
-  -Dsonar.sources=. \
-  -Dsonar.host.url=https://sonarcloud.io \
-  -Dsonar.login=$SONAR_TOKEN
+- docker run --rm --mount type=volume,src="$(pwd)",dst=/opt/app,type=bind -w=/opt/app red6/docker-sonar-scanner:latest sonar-scanner -Dsonar.login=$SONAR_TOKEN
