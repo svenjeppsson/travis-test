@@ -19,7 +19,7 @@ before_install:
   - mysql < schema.sql
 
 script:
-  - go test -short -coverprofile=cov.out `go list./..|grep -v vendor/`
+  - go test -short -coverprofile=cov.out
 
 after_success:
   - sonar-scanner
