@@ -5,6 +5,11 @@ go:
 services:
   - docker
 
+env:
+  global:
+    - DBPORT="3307"
+    - DBCON="root:secret@tcp(localhost:${DBPORT})/test"
+
 
 before_install:
   - ./start-db-container.sh
