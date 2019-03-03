@@ -17,6 +17,6 @@ function waitContainer {
   printf "$lf"
 }
 
-docker run --rm  -p 3306:3307 -v $(pwd)/schema.sql:/docker-entrypoint-initdb.d/schema.sql --name testdb -e MYSQL_ROOT_PASSWORD=secret --health-cmd='mysqladmin ping --silent' -d mariadb:10
+docker run --rm  -p localhost:3307:3306 -v $(pwd)/schema.sql:/docker-entrypoint-initdb.d/schema.sql --name testdb -e MYSQL_ROOT_PASSWORD=secret --health-cmd='mysqladmin ping --silent' -d mariadb:10
 waitContainer testdb
 export DBCON="root:secret@tcp(localhost:3307)/test"
