@@ -18,6 +18,10 @@ env:
 before_install:
   - mysql < schema.sql
 
+script:
+  - dep ensure
+  - go test -short -coverprofile=cov.out `go list./..|grep -v vendor/`
+
 after_success:
   - sonar-scanner
 
