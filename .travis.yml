@@ -4,15 +4,14 @@ go:
 
 services:
   - docker
+  - mysql
 
 env:
   global:
-    - DBPORT="3307"
-    - DBCON="root:secret@tcp(localhost:${DBPORT})/TEST"
-
+    - DBCON="root@tcp(localhost:3306)/TEST"
 
 before_install:
-  - ./start-db-container.sh
+  - mysql < schema.sql
 
 after_success:
   - docker run --rm --mount type=volume,src="$(pwd)",dst=/opt/app,type=bind -w=/opt/app red6/docker-sonar-scanner:latest sonar-scanner -Dsonar.login=$SONAR_TOKEN
