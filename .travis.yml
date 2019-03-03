@@ -6,6 +6,11 @@ services:
   - docker
   - mysql
 
+addons:
+  sonarcloud:
+    organization: "svenjeppsson-github" # the key of the org you chose at step #3
+    token:
+      secure: $SONAR_TOKEN
 env:
   global:
     - DBCON="root@tcp(localhost:3306)/TEST"
@@ -14,7 +19,7 @@ before_install:
   - mysql < schema.sql
 
 after_success:
-  - docker run --rm --mount type=volume,src="$(pwd)",dst=/opt/app,type=bind -w=/opt/app red6/docker-sonar-scanner:latest sonar-scanner -Dsonar.login=$SONAR_TOKEN
+  - sonar-scanner
 
 after_script:
   - docker stop testdb
