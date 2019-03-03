@@ -8,7 +8,7 @@ services:
 env:
   global:
     - DBPORT="3307"
-    - DBCON="root:secret@tcp(localhost:${DBPORT})/test"
+    - DBCON="root:secret@tcp(localhost:${DBPORT})/TEST"
 
 
 before_install:
