@@ -44,7 +44,7 @@ func TestApp_Initialize(t *testing.T) {
 }
 
 func testTablesExist(t *testing.T) {
-	tables := [...]string{"testtab"}
+	tables := [...]string{"TESTTAB"}
 	for _, table := range tables {
 		_, e := a.DB.Query("SELECT 1 FROM " + table + " LIMIT 1")
 		if e != nil {
