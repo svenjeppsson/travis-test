@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 )
@@ -16,7 +18,36 @@ func TestIntegration(t *testing.T) {
 	}
 	t.Run("Tables Exist", testTablesExist)
 	t.Run("testTablesStore", testTablesStore)
+	t.Run("testTablesStore", testGETtesttab)
 
+}
+
+// main_test.go
+
+func testGETtesttab(t *testing.T) {
+	req, _ := http.NewRequest("GET", "/testtab", nil)
+	response := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+	expected := "\"xyz\""
+	actual := response.Body.String()
+	if actual != expected {
+		t.Errorf("Expected %s Got %s", expected, actual)
+	}
+}
+
+func executeRequest(req *http.Request) *httptest.ResponseRecorder {
+	rr := httptest.NewRecorder()
+	a.Router.ServeHTTP(rr, req)
+
+	return rr
+}
+
+func checkResponseCode(t *testing.T, expected, actual int) {
+	if expected != actual {
+		t.Errorf("Expected response code %d. Got %d\n", expected, actual)
+	}
 }
 
 //You can make every method mockable by creating a func
