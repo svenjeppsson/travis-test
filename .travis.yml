@@ -1,6 +1,16 @@
+language: go
+go:
+  - 1.11.5
+
 services:
   - docker
-  
+
+
 before_install:
-- ./test.sh
-- docker run --rm --mount type=volume,src="$(pwd)",dst=/opt/app,type=bind -w=/opt/app red6/docker-sonar-scanner:latest sonar-scanner -Dsonar.login=$SONAR_TOKEN
+  - ./start-db-container.sh
+
+after_success:
+  - docker run --rm --mount type=volume,src="$(pwd)",dst=/opt/app,type=bind -w=/opt/app red6/docker-sonar-scanner:latest sonar-scanner -Dsonar.login=$SONAR_TOKEN
+
+after_script:
+  - docker stop testdb
