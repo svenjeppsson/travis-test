@@ -28,6 +28,3 @@ script:
 
 after_success:
   - sonar-scanner
-
-after_script:
-  - docker stop testdb
