@@ -5,7 +5,7 @@ This is a dummy test project, to try out multiple things:
   * Unittest with mocking
 * Continous Ingetegration mit Travis-CI
   * Verwendung von Docker zum Bereitstellen von Umsytstemen für den Intrgrationstest
-    * Anbindung von SonarCloud
+  * Anbindung von SonarCloud
 
 After this try and error phase, i plan to write an tutorial about the things I found out and maybe will produce Youtube Videos about the stuff.
 
