@@ -11,8 +11,14 @@ func TestIntegration(t *testing.T) {
 	a.MountIntegration()
 	err := a.Initialize()
 	if err != nil {
-		t.Errorf("Initialize not fail")
+		t.Errorf("Initialize should not fail")
+	} else {
+		t.Logf("Initialize did not fail")
 	}
+	if a.dao.DB == nil {
+		t.Errorf("DB is nil")
+	}
+
 	t.Run("Tables Exist", testTablesExist)
 	t.Run("testTablesStore", testTablesStore)
 	t.Run("testTablesStore", testGETtesttab)

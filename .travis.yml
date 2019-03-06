@@ -17,8 +17,11 @@ env:
 
 before_install:
   - mysql < schema.sql
+  - go install -mod vendor github.com/golangci/golangci-lint/cmd/golangci-lint
 
 script:
+  - golangci-lint run
+  - go vet .
   - go test -short -coverprofile=cov.out
 
 after_success:
