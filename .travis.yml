@@ -12,6 +12,7 @@ addons:
     token:
       secure: $SONAR_TOKEN
 env:
+  - GO111MODULE=on
   global:
     - DBCON="root@tcp(localhost:3306)/TEST"
 
