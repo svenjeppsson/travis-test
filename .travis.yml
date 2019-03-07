@@ -20,11 +20,14 @@ before_install:
   - mysql < schema.sql
   - go get github.com/golangci/golangci-lint/cmd/golangci-lint
   - go install github.com/golangci/golangci-lint/cmd/golangci-lint
+  - dep ensure
 
 script:
   - golangci-lint run
   - go vet .
-  - go test -short -coverprofile=cov.out
+  - go test -v ./... -run ^TestIntegration -coverprofile=cov.out
+  - go test -v ./... -run ^TestUnit -coverprofile=cov.out
+
 
 after_success:
   - sonar-scanner
