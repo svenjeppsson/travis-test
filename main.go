@@ -2,13 +2,15 @@ package main
 
 import (
 	_ "github.com/go-sql-driver/mysql"
-	"log"
+	"github.com/gorilla/mux"
+	"github.com/svenjeppsson/travis-test/dal"
 )
 
 var a App
 
 func main() {
-	a.MountIntegration()
-	err := a.Initialize()
-	log.Fatal(err)
+	NewApp(dal.NewSQLDataAcesssLayer())
+	router := mux.NewRouter()
+	router.HandleFunc("/persons", a.GetPerson).Methods("GET")
+
 }

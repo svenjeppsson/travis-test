@@ -1,42 +1,30 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
+	"github.com/svenjeppsson/travis-test/interfaces"
 	"log"
 	"net/http"
-	"os"
 )
 
+type Application interface {
+	GetPerson(w http.ResponseWriter, r *http.Request)
+}
 type App struct {
-	dao     Dao
-	routing Routing
-	sqlOpen func(driverName string, dataSourceName string) (*sql.DB, error)
+	dal interfaces.DataAccessLayer
 }
 
-func (a *App) MountIntegration() {
-	a.sqlOpen = sql.Open
-}
-
-func (a *App) Initialize() error {
-	dbcon := os.Getenv("DBCON")
-	err := a.dao.connect(dbcon)
-	if err != nil {
-		log.Printf("Could connext to %v: reason %v", dbcon, err)
-		return err
-	}
-	a.routing.initializeRoutes()
-	return nil
-}
-
-func (a *App) getTesttab(w http.ResponseWriter, r *http.Request) {
+func (a *App) GetPerson(w http.ResponseWriter, r *http.Request) {
 	dummyRequest := "xyz"
 	a.respondWithJSON(w, http.StatusOK, dummyRequest)
 }
 
-//func (a *App) respondWithError(w http.ResponseWriter, code int, message string) {
-//	a.respondWithJSON(w, code, map[string]string{"error": message})
-//}
+func NewApp(dal interfaces.DataAccessLayer) Application {
+	app := &App{
+		dal: dal,
+	}
+	return app
+}
 
 func (a *App) respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
