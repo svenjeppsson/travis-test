@@ -7,3 +7,4 @@ go fmt ./...
 golangci-lint run
 go vet .
 go test -v ./... -run ^TestIntegration -coverprofile=cov.out
+go test -v ./... -run ^TestUnit -coverprofile=cov.out

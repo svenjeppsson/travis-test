@@ -31,7 +31,6 @@ func (dal *SQLDataAcesssLayer) StorePerson(person *model.Person) error {
 	person.Id = &id
 	return nil
 }
-
 func (dal *SQLDataAcesssLayer) DelelePerson(id int64) error {
 	error := dal.connect()
 	if error != nil {
@@ -65,15 +64,15 @@ func (dal *SQLDataAcesssLayer) GetPerson(id int64) (error, *model.Person) {
 	if error != nil {
 		return error, nil
 	}
-	person := model.Person{}
-	error = dal.DB.Get(&person, "SELECT ID,LASTNAME,FIRSTNAME FROM PERSON WHERE ID=?", id)
+	person := &model.Person{}
+	error = dal.DB.Get(person, "SELECT ID,LASTNAME,FIRSTNAME FROM PERSON WHERE ID=?", id)
 	if error != nil {
 		if strings.Contains(fmt.Sprintf("%v", error), "no rows") {
 			return fmt.Errorf("Cant find Person By Id=%v", id), nil
 		}
 		return error, nil
 	}
-	return nil, &person
+	return nil, person
 }
 
 func (dal *SQLDataAcesssLayer) GetAllPersons() (error, []model.Person) {
@@ -97,8 +96,8 @@ func (dal *SQLDataAcesssLayer) GetPersonsBySearchString(search string) (error, [
 }
 
 func NewSQLDataAcesssLayer() interfaces.DataAccessLayer {
-	sqlDataAcesssLayer := &SQLDataAcesssLayer{}
-	return sqlDataAcesssLayer
+	sqlDataAcesssLayer := SQLDataAcesssLayer{}
+	return &sqlDataAcesssLayer
 }
 
 func (dal *SQLDataAcesssLayer) connect() error {
