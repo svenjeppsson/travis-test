@@ -25,8 +25,8 @@ before_install:
 script:
   - golangci-lint run
   - go vet .
-  - go test -v ./... -run ^TestIntegration -coverprofile=cov.out
-  - go test -v ./... -run ^TestUnit -coverprofile=cov.out
+  - go test -v ./... -run ^TestIntegration.* -coverprofile=cov.out
+  - go test -v ./... -run ^TestUnit.* -coverprofile=cov.out
 
 
 after_success:
