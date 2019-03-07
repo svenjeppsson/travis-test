@@ -1,10 +1,7 @@
-language: go
-go:
-  - 1.11.5
+language: bash
 
 services:
   - docker
-  - mysql
 
 addons:
   sonarcloud:
@@ -14,19 +11,13 @@ addons:
 env:
   global:
     - GO111MODULE=on
-    - DBCON="root@tcp(localhost:3306)/TEST"
+    - DBPORT=3306
 
 before_install:
-  - mysql < schema.sql
-  - go get github.com/golangci/golangci-lint
-  - go install github.com/golangci/golangci-lint/cmd/golangci-lint
+  - ./start-db-container.sh 3306 testdb secret
 
 script:
-  - golangci-lint run
-  - go vet .
-  - go test -v ./... -run ^TestIntegration.* -coverprofile=cov.out
-  - go test -v ./... -run ^TestUnit.* -coverprofile=cov.out
-
+  - docker run -ti --link testdb:mysql -e "DBCON=root:secret@tcp(mysql:3306)/TEST" -v $(pwd):/go/src/app xthinker/go-builder:latest
 
 after_success:
   - sonar-scanner

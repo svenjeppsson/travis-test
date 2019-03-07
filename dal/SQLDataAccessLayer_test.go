@@ -8,6 +8,7 @@ import (
 	"github.com/svenjeppsson/travis-test/interfaces"
 	"github.com/svenjeppsson/travis-test/model"
 	"github.com/svenjeppsson/travis-test/util"
+	"log"
 	"os"
 	"testing"
 )
@@ -71,7 +72,11 @@ func testSQLDataAcesssLayer_GetAllPersons(expectedCount int, t *testing.T) {
 }
 
 func truncateTable(tablename string) {
-	db, _ := sqlx.Connect("mysql", os.Getenv("DBCON"))
+	dbcon := os.Getenv("DBCON")
+	db, err := sqlx.Connect("mysql", dbcon)
+	if err != nil {
+		log.Fatalf("error by connection to %v : %v", dbcon, err)
+	}
 	db.MustExec("TRUNCATE TABLE " + tablename)
 	db.Close()
 }

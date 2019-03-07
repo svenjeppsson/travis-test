@@ -64,6 +64,20 @@
   version = "v1.3.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:4d1f2fb2332d81aacdc20433f6654d85ffeef039dc40ea06bcc013ad2ef67df5"
+  name = "github.com/svenjeppsson/travis-test"
+  packages = [
+    "dal",
+    "interfaces",
+    "mocks",
+    "model",
+    "util",
+  ]
+  pruneopts = "UT"
+  revision = "0f5cfe9e57bd76c161ed2af9a002ac7d56538ca5"
+
+[[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
@@ -80,6 +94,11 @@
     "github.com/jmoiron/sqlx",
     "github.com/stretchr/testify/assert",
     "github.com/stretchr/testify/mock",
+    "github.com/svenjeppsson/travis-test/dal",
+    "github.com/svenjeppsson/travis-test/interfaces",
+    "github.com/svenjeppsson/travis-test/mocks",
+    "github.com/svenjeppsson/travis-test/model",
+    "github.com/svenjeppsson/travis-test/util",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
