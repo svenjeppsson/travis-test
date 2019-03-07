@@ -18,7 +18,7 @@ env:
 
 before_install:
   - mysql < schema.sql
-  - go get github.com/golangci/golangci-lint/cmd/golangci-lint
+  - go get github.com/golangci/golangci-lint
   - go install github.com/golangci/golangci-lint/cmd/golangci-lint
 
 script:
