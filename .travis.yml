@@ -1,4 +1,4 @@
-language: bash
+language: go
 
 services:
   - docker
@@ -8,16 +8,12 @@ addons:
     organization: "svenjeppsson-github" # the key of the org you chose at step #3
     token:
       secure: $SONAR_TOKEN
-env:
-  global:
-    - GO111MODULE=on
-    - DBPORT=3306
 
 before_install:
-  - ./start-db-container.sh 3306 testdb secret
+  - ./start-db-container.sh 3307 testdb secret
 
 script:
-  - docker run -ti --link testdb:mysql -e "DBCON=root:secret@tcp(mysql:3306)/TEST" -v $(pwd):/go/src/app xthinker/go-builder:latest
+  - docker run -ti --link testdb:mysql -e "DBCON=root:secret@tcp(mysql:3307)/TEST" -v $(pwd):/go/src/app xthinker/go-builder:latest
 
 after_success:
   - sonar-scanner
