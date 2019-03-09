@@ -3,13 +3,6 @@ language: go
 services:
   - docker
 
-env:
-  - GO_BUILDER_VERSION=0.0.4
-  - DB_CONTAINER=testdb
-  - DB_USER=root
-  - DB_PASSWORD=secret
-  - DB_PORT=3307
-
 addons:
   sonarcloud:
     organization: "svenjeppsson-github" # the key of the org you chose at step #3
