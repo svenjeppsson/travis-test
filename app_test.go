@@ -12,7 +12,7 @@ import (
 
 var app Application
 
-func TestUnitApp(t *testing.T) {
+func TestApp(t *testing.T) {
 	layer := mocks.DataAccessLayer{}
 	layer.On("GetPerson", int64(1)).Return(nil, &model.Person{Id: util.AdrInt64(1), FirstName: "Max", LastName: "Maier"})
 	app = NewApp(&layer)

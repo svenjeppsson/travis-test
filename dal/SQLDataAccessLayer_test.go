@@ -15,7 +15,7 @@ import (
 
 var sqldal interfaces.DataAccessLayer
 
-func TestIntegrationDataAccessLayer(t *testing.T) {
+func TestDataAccessLayer(t *testing.T) {
 	sqldal = NewSQLDataAcesssLayer()
 	truncateTable("PERSON")
 	testSQLDataAcesssLayer_GetAllPersons(0, t)
