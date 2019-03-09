@@ -13,7 +13,7 @@ before_install:
   - ./start-db-container.sh 3307 testdb secret
 
 script:
-  - docker run -ti --link testdb:mysql -e "DBCON=root:secret@tcp(mysql:3307)/TEST" -v $(pwd):/go/src/app xthinker/go-builder:latest
+  - docker run -ti --link testdb:mysql -e "DBCON=root:secret@tcp(mysql:3307)/TEST" -v $(pwd):/go/src/app xthinker/go-builder:0.0.3
 
 after_success:
   - sonar-scanner

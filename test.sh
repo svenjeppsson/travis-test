@@ -1,10 +1,3 @@
 #!/usr/bin/env bash
-export DBPORT=3306
-export DBCON="root:secret@tcp(localhost:${DBPORT})/TEST"
-./start-db-container.sh
-dep ensure
-go fmt ./...
-golangci-lint run
-go vet .
-go test -v ./... -run ^TestIntegration.* -coverprofile=cov.out
-go test -v ./... -run ^TestUnit.* -coverprofile=cov.out
+./start-db-container.sh 3307 testdb secret
+docker run -ti --link testdb:mysql -- $(id -u):$(id -g) -e "DBCON=root:secret@tcp(mysql:3307)/TEST" -v $(pwd):/go/src/app xthinker/go-builder:latest

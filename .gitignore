@@ -1,2 +1,5 @@
 vendor
 cov.out
+cov1.out
+cov2.out
+mocks
