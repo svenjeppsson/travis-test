@@ -16,7 +16,7 @@ before_install:
   - ./waitForContainer.sh $DB_CONTAINER
 
 script:
-  - docker run -ti --link $DB_CONTAINER:mysql -e "DBCON=$DB_USER:$DB_PASSWORD@tcp(mysql:$DB_PORT)/TEST" -v $(pwd):/go/src/app xthinker/go-builder:$GO_BUILDER_VERSION
+  - docker run -ti --link $DB_CONTAINER:mysql -e "DBCON=$DB_USER:$DB_PASSWORD@tcp(mysql:3306)/TEST" -v $(pwd):/go/src/app xthinker/go-builder:$GO_BUILDER_VERSION
 
 after_success:
   - sonar-scanner
