@@ -4,7 +4,11 @@ services:
   - docker
 
 env:
-  - GO_BUILDER_VERSION=0.0.3
+  - GO_BUILDER_VERSION=0.0.4
+  - DB_CONTAINER=testdb
+  - DB_USER=root
+  - DB_PASSWORD=secret
+  - DB_PORT=3307
 addons:
   sonarcloud:
     organization: "svenjeppsson-github" # the key of the org you chose at step #3
@@ -12,13 +16,13 @@ addons:
       secure: $SONAR_TOKEN
 
 before_install:
-  - ./start-db-container.sh 3307 testdb secret
+  - ./start-db-container.sh $DB_PORT $DB_CONTAINER $DB_PASSWORD
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker pull xthinker/go-builder:$GO_BUILDER_VERSION
-  - ./waitForContainer.sh testdb
+  - ./waitForContainer.sh $DB_CONTAINER
 
 script:
-  - docker run -ti --link testdb:mysql -e "DBCON=root:secret@tcp(mysql:3307)/TEST" -v $(pwd):/go/src/app xthinker/go-builder:$GO_BUILDER_VERSION
+  - docker run -ti --link $DB_CONTAINER:mysql -e "DBCON=$DB_USER:$DB_PASSWORD@tcp(mysql:$DB_PORT)/TEST" -v $(pwd):/go/src/app xthinker/go-builder:$GO_BUILDER_VERSION
 
 after_success:
   - sonar-scanner
