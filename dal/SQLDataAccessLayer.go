@@ -40,25 +40,26 @@ func (dal *SQLDataAcesssLayer) DelelePerson(id int64) error {
 	}
 	result, error := dal.DB.Exec("DELETE FROM PERSON WHERE ID=?", id)
 
+	const cantDelete = "Cant delete Person By Id=%v!"
+	const cantDeleteWithReason = cantDelete + " Reason=%v"
 	if error != nil {
 		if strings.Contains(fmt.Sprintf("%v", error), NO_ROWS) {
-			return fmt.Errorf("Cant delete Person By Id=%v! Reason=%v", id, error)
+			return fmt.Errorf(cantDeleteWithReason, id, error)
+		} else {
+			return error
 		}
-		return error
-	}
-	i, error := result.RowsAffected()
-	if error != nil {
-		if strings.Contains(fmt.Sprintf("%v", error), NO_ROWS) {
-			return fmt.Errorf("Cant delete Person By Id=%v! Reason=%v", id, error)
-		}
-	}
-	if i < 1 {
-		return fmt.Errorf("Cant delete Person By Id=%v", id)
-	}
-	if i > 1 {
-		return fmt.Errorf("oh oh, more than one Person deleted By Id=%v! Run Forest run!", id)
 
 	}
+
+	i, error := result.RowsAffected()
+	if error != nil {
+		return fmt.Errorf(cantDeleteWithReason, id, error)
+	}
+
+	if i < 1 {
+		return fmt.Errorf(cantDelete, id)
+	}
+
 	return nil
 }
 
