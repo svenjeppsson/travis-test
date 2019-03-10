@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/svenjeppsson/travis-test/interfaces"
 	"github.com/svenjeppsson/travis-test/model"
-	"github.com/svenjeppsson/travis-test/util"
 	"log"
 	"os"
 	"testing"
@@ -21,16 +20,16 @@ func TestDataAccessLayer(t *testing.T) {
 	truncateTable("PERSON")
 	testSQLDataAcesssLayer_GetAllPersons(0, nil, t)
 	testSQLDataAcesssLayer_GetPersonsBySearchString("max", 0, nil, t)
-	testSQLDataAcesssLayer_GetPerson(1, nil, util.AdrStr(fmt.Sprintf("Cant find Person By Id=%v", 1)), t)
-	testSQLDataAcesssLayer_DeletePerson(0, util.AdrStr(fmt.Sprintf("Cant delete Person By Id=%v", 0)), t)
-	testSQLDataAcesssLayer_StorePerson(&model.Person{FirstName: "Max", LastName: "Meier"}, &model.Person{Id: util.AdrInt64(1), FirstName: "Max", LastName: "Meier"}, nil, t)
-	testSQLDataAcesssLayer_StorePerson(&model.Person{FirstName: "Max", LastName: "Meier"}, &model.Person{FirstName: "Max", LastName: "Meier"}, util.AdrStr("Duplicate"), t)
-	testSQLDataAcesssLayer_StorePerson(&model.Person{FirstName: "Max2", LastName: "Meier"}, &model.Person{Id: util.AdrInt64(3), FirstName: "Max2", LastName: "Meier"}, nil, t)
+	testSQLDataAcesssLayer_GetPerson(1, nil, AdrStr(fmt.Sprintf("Cant find Person By Id=%v", 1)), t)
+	testSQLDataAcesssLayer_DeletePerson(0, AdrStr(fmt.Sprintf("Cant delete Person By Id=%v", 0)), t)
+	testSQLDataAcesssLayer_StorePerson(&model.Person{FirstName: "Max", LastName: "Meier"}, &model.Person{Id: AdrInt64(1), FirstName: "Max", LastName: "Meier"}, nil, t)
+	testSQLDataAcesssLayer_StorePerson(&model.Person{FirstName: "Max", LastName: "Meier"}, &model.Person{FirstName: "Max", LastName: "Meier"}, AdrStr("Duplicate"), t)
+	testSQLDataAcesssLayer_StorePerson(&model.Person{FirstName: "Max2", LastName: "Meier"}, &model.Person{Id: AdrInt64(3), FirstName: "Max2", LastName: "Meier"}, nil, t)
 	testSQLDataAcesssLayer_GetAllPersons(2, nil, t)
 	testSQLDataAcesssLayer_GetPersonsBySearchString("Max", 2, nil, t)
 	testSQLDataAcesssLayer_GetPersonsBySearchString("axmei", 1, nil, t)
 	testSQLDataAcesssLayer_GetPersonsBySearchString("nix", 0, nil, t)
-	testSQLDataAcesssLayer_GetPerson(1, &model.Person{Id: util.AdrInt64(1), FirstName: "Max", LastName: "Meier"}, nil, t)
+	testSQLDataAcesssLayer_GetPerson(1, &model.Person{Id: AdrInt64(1), FirstName: "Max", LastName: "Meier"}, nil, t)
 	testSQLDataAcesssLayer_DeletePerson(1, nil, t)
 
 }
@@ -38,11 +37,11 @@ func TestDataAccessLayer(t *testing.T) {
 func TestDataAccessLayerConnectError(t *testing.T) {
 	os.Setenv("DBCON", "dings")
 	sqldal = NewSQLDataAcesssLayer()
-	testSQLDataAcesssLayer_StorePerson(&model.Person{FirstName: "Max", LastName: "Meier"}, &model.Person{FirstName: "Max", LastName: "Meier"}, util.AdrStr("invalid DSN"), t)
-	testSQLDataAcesssLayer_GetPerson(100, nil, util.AdrStr("invalid DSN"), t)
-	testSQLDataAcesssLayer_GetPersonsBySearchString("Max", 0, util.AdrStr("invalid DSN"), t)
-	testSQLDataAcesssLayer_GetAllPersons(0, util.AdrStr("invalid DSN"), t)
-	testSQLDataAcesssLayer_DeletePerson(17, util.AdrStr("invalid DSN"), t)
+	testSQLDataAcesssLayer_StorePerson(&model.Person{FirstName: "Max", LastName: "Meier"}, &model.Person{FirstName: "Max", LastName: "Meier"}, AdrStr("invalid DSN"), t)
+	testSQLDataAcesssLayer_GetPerson(100, nil, AdrStr("invalid DSN"), t)
+	testSQLDataAcesssLayer_GetPersonsBySearchString("Max", 0, AdrStr("invalid DSN"), t)
+	testSQLDataAcesssLayer_GetAllPersons(0, AdrStr("invalid DSN"), t)
+	testSQLDataAcesssLayer_DeletePerson(17, AdrStr("invalid DSN"), t)
 }
 
 func testSQLDataAcesssLayer_StorePerson(person *model.Person, expectedPerson *model.Person, expectederror *string, t *testing.T) {
@@ -91,4 +90,11 @@ func expectError(expectederror *string, t *testing.T, e error) {
 	} else {
 		assert.Nil(t, e)
 	}
+}
+
+func AdrInt64(v int64) *int64 {
+	return &v
+}
+func AdrStr(v string) *string {
+	return &v
 }
