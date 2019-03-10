@@ -13,6 +13,8 @@ type SQLDataAcesssLayer struct {
 	DB *sqlx.DB
 }
 
+const NO_ROWS = "no rows"
+
 func (dal *SQLDataAcesssLayer) StorePerson(person *model.Person) error {
 	error := dal.connect()
 	if error != nil {
@@ -37,15 +39,16 @@ func (dal *SQLDataAcesssLayer) DelelePerson(id int64) error {
 		return error
 	}
 	result, error := dal.DB.Exec("DELETE FROM PERSON WHERE ID=?", id)
+
 	if error != nil {
-		if strings.Contains(fmt.Sprintf("%v", error), "no rows") {
+		if strings.Contains(fmt.Sprintf("%v", error), NO_ROWS) {
 			return fmt.Errorf("Cant delete Person By Id=%v! Reason=%v", id, error)
 		}
 		return error
 	}
 	i, error := result.RowsAffected()
 	if error != nil {
-		if strings.Contains(fmt.Sprintf("%v", error), "no rows") {
+		if strings.Contains(fmt.Sprintf("%v", error), NO_ROWS) {
 			return fmt.Errorf("Cant delete Person By Id=%v! Reason=%v", id, error)
 		}
 	}
