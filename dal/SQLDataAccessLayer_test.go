@@ -17,57 +17,61 @@ var sqldal interfaces.DataAccessLayer
 
 func TestDataAccessLayer(t *testing.T) {
 	sqldal = NewSQLDataAcesssLayer()
+
 	truncateTable("PERSON")
-	testSQLDataAcesssLayer_GetAllPersons(0, t)
-	testSQLDataAcesssLayer_GetPersonsBySearchString("max", 0, t)
-	testSQLDataAcesssLayer_GetPerson(1, nil, fmt.Errorf("Cant find Person By Id=%v", 1), t)
-	testSQLDataAcesssLayer_DeletePerson(0, fmt.Errorf("Cant delete Person By Id=%v", 0), t)
+	testSQLDataAcesssLayer_GetAllPersons(0, nil, t)
+	testSQLDataAcesssLayer_GetPersonsBySearchString("max", 0, nil, t)
+	testSQLDataAcesssLayer_GetPerson(1, nil, util.AdrStr(fmt.Sprintf("Cant find Person By Id=%v", 1)), t)
+	testSQLDataAcesssLayer_DeletePerson(0, util.AdrStr(fmt.Sprintf("Cant delete Person By Id=%v", 0)), t)
 	testSQLDataAcesssLayer_StorePerson(&model.Person{FirstName: "Max", LastName: "Meier"}, &model.Person{Id: util.AdrInt64(1), FirstName: "Max", LastName: "Meier"}, nil, t)
 	testSQLDataAcesssLayer_StorePerson(&model.Person{FirstName: "Max", LastName: "Meier"}, &model.Person{FirstName: "Max", LastName: "Meier"}, util.AdrStr("Duplicate"), t)
 	testSQLDataAcesssLayer_StorePerson(&model.Person{FirstName: "Max2", LastName: "Meier"}, &model.Person{Id: util.AdrInt64(3), FirstName: "Max2", LastName: "Meier"}, nil, t)
-	testSQLDataAcesssLayer_GetAllPersons(2, t)
-	testSQLDataAcesssLayer_GetPersonsBySearchString("Max", 2, t)
-	testSQLDataAcesssLayer_GetPersonsBySearchString("axmei", 1, t)
-	testSQLDataAcesssLayer_GetPersonsBySearchString("nix", 0, t)
+	testSQLDataAcesssLayer_GetAllPersons(2, nil, t)
+	testSQLDataAcesssLayer_GetPersonsBySearchString("Max", 2, nil, t)
+	testSQLDataAcesssLayer_GetPersonsBySearchString("axmei", 1, nil, t)
+	testSQLDataAcesssLayer_GetPersonsBySearchString("nix", 0, nil, t)
 	testSQLDataAcesssLayer_GetPerson(1, &model.Person{Id: util.AdrInt64(1), FirstName: "Max", LastName: "Meier"}, nil, t)
 	testSQLDataAcesssLayer_DeletePerson(1, nil, t)
 
 }
 
+func TestDataAccessLayerConnectError(t *testing.T) {
+	os.Setenv("DBCON", "dings")
+	sqldal = NewSQLDataAcesssLayer()
+	testSQLDataAcesssLayer_StorePerson(&model.Person{FirstName: "Max", LastName: "Meier"}, &model.Person{FirstName: "Max", LastName: "Meier"}, util.AdrStr("invalid DSN"), t)
+	testSQLDataAcesssLayer_GetPerson(100, nil, util.AdrStr("invalid DSN"), t)
+	testSQLDataAcesssLayer_GetPersonsBySearchString("Max", 0, util.AdrStr("invalid DSN"), t)
+	testSQLDataAcesssLayer_GetAllPersons(0, util.AdrStr("invalid DSN"), t)
+	testSQLDataAcesssLayer_DeletePerson(17, util.AdrStr("invalid DSN"), t)
+}
+
 func testSQLDataAcesssLayer_StorePerson(person *model.Person, expectedPerson *model.Person, expectederror *string, t *testing.T) {
 	error := sqldal.StorePerson(person)
-	if expectederror != nil {
-		assert.Contains(t, fmt.Sprintf("%v", error), *expectederror)
-	} else {
-		assert.Nil(t, error)
-	}
+	expectError(expectederror, t, error)
 	assert.Equal(t, expectedPerson, person)
 
 }
-func testSQLDataAcesssLayer_GetPerson(id int64, expectedPerson *model.Person, expectederror error, t *testing.T) {
+
+func testSQLDataAcesssLayer_GetPerson(id int64, expectedPerson *model.Person, expectederror *string, t *testing.T) {
 	error, person := sqldal.GetPerson(id)
-	assert.Equal(t, expectederror, error)
+	expectError(expectederror, t, error)
 	assert.Equal(t, expectedPerson, person)
 
 }
-func testSQLDataAcesssLayer_DeletePerson(id int64, expectederror error, t *testing.T) {
+func testSQLDataAcesssLayer_DeletePerson(id int64, expectederror *string, t *testing.T) {
 	error := sqldal.DelelePerson(id)
-	assert.Equal(t, expectederror, error)
+	expectError(expectederror, t, error)
 
 }
-func testSQLDataAcesssLayer_GetPersonsBySearchString(search string, expectedCount int, t *testing.T) {
+func testSQLDataAcesssLayer_GetPersonsBySearchString(search string, expectedCount int, expectederror *string, t *testing.T) {
 	error, persons := sqldal.GetPersonsBySearchString(search)
-	if error != nil {
-		t.Errorf("%v", error)
-	}
+	expectError(expectederror, t, error)
 	assert.Equal(t, expectedCount, len(persons))
 }
 
-func testSQLDataAcesssLayer_GetAllPersons(expectedCount int, t *testing.T) {
+func testSQLDataAcesssLayer_GetAllPersons(expectedCount int, expectederror *string, t *testing.T) {
 	error, persons := sqldal.GetAllPersons()
-	if error != nil {
-		t.Error(error)
-	}
+	expectError(expectederror, t, error)
 	assert.Equal(t, expectedCount, len(persons))
 }
 
@@ -79,4 +83,12 @@ func truncateTable(tablename string) {
 	}
 	db.MustExec("TRUNCATE TABLE " + tablename)
 	db.Close()
+}
+
+func expectError(expectederror *string, t *testing.T, e error) {
+	if expectederror != nil {
+		assert.Contains(t, fmt.Sprintf("%v", e), *expectederror)
+	} else {
+		assert.Nil(t, e)
+	}
 }
