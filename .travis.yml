@@ -7,6 +7,8 @@ env:
   global:
     - GO_BUILDER_VERSION=latest
     - DB_CONTAINER=testdb
+    - DB_PASSWORD=secret
+    - DB_USER=root
 
 addons:
   sonarcloud:
@@ -15,13 +17,13 @@ addons:
       secure: $SONAR_TOKEN
 
 before_install:
-  - docker run --rm  -v $(pwd)/schema.sql:/docker-entrypoint-initdb.d/schema.sql --name $DB_CONTAINER -e "MYSQL_ROOT_PASSWORD=secret" --health-cmd='mysqladmin ping --silent' -d mariadb:10
-  - echo "$DOCKER_PASSWORD" | docker login -u "root" --password-stdin
+  - docker run --rm  -v $(pwd)/schema.sql:/docker-entrypoint-initdb.d/schema.sql --name $DB_CONTAINER -e "MYSQL_ROOT_PASSWORD=$DB_PASSWORD" --health-cmd='mysqladmin ping --silent' -d mariadb:10
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker pull xthinker/go-builder:$GO_BUILDER_VERSION
   - ./waitForContainer.sh $DB_CONTAINER
 
 script:
-  - docker run --rm -ti --link $DB_CONTAINER:mysql -e "DBCON=root:secret@tcp(mysql:3306)/TEST" -v $(pwd):/go/src/app xthinker/go-builder:$GO_BUILDER_VERSION
+  - docker run --rm -ti --link $DB_CONTAINER:mysql -e "DBCON=$DB_USER:$DB_PASSWORD@tcp(mysql:3306)/TEST" -v $(pwd):/go/src/app xthinker/go-builder:$GO_BUILDER_VERSION
 
 after_success:
   - sonar-scanner
